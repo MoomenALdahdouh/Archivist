@@ -71,6 +71,7 @@ struct SettingsView: View {
 
             Form {
                 Picker("Default format", selection: $model.settings.defaultFormat) {
+                    Text("RAR").tag(ArchiveFormat.rar5)
                     Text("ZIP").tag(ArchiveFormat.zip)
                     Text("7Z").tag(ArchiveFormat.sevenZip)
                     Text("TAR.GZ").tag(ArchiveFormat.tarGz)
@@ -95,6 +96,7 @@ struct SettingsView: View {
 
             Form {
                 Toggle("Finder: Extract Here", isOn: $model.settings.finderExtractHere)
+                Toggle("Finder: Compress to RAR", isOn: $model.settings.finderCompressRAR)
                 Toggle("Finder: Compress to ZIP", isOn: $model.settings.finderCompressZIP)
                 Toggle("Finder: Compress to 7Z", isOn: $model.settings.finderCompress7Z)
                 Text("File associations are declared in Info.plist. Use System Settings → Desktop & Dock → Default apps, or `duti`, to change handlers.")
@@ -123,6 +125,9 @@ struct SettingsView: View {
                 LabeledContent("UnRAR helper") {
                     Text(DefaultBackends.unrarAvailable() ? "available" : "missing")
                 }
+                LabeledContent("RAR create helper") {
+                    Text(DefaultBackends.rarCreateAvailable() ? "available" : "missing")
+                }
                 Button("Export diagnostics") { exportDiagnostics() }
                 Button("Clean leftover temporary files") {
                     Task { try? await TempDirectoryManager.shared.cleanupInterrupted() }
@@ -145,6 +150,7 @@ struct SettingsView: View {
         Archivist diagnostics
         7-Zip: \(DefaultBackends.sevenZipAvailable())
         UnRAR: \(DefaultBackends.unrarAvailable())
+        RAR create: \(DefaultBackends.rarCreateAvailable())
         Jobs: \(model.jobs.count)
         """
         let panel = NSSavePanel()

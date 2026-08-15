@@ -1,7 +1,7 @@
 # Known limitations
 
-- **RAR creation is not implemented** (RARLAB proprietary). Extraction of unencrypted RAR uses libarchive; encrypted/multipart RAR requires the UnRAR helper.
-- **libarchive cannot decrypt 7Z or RAR.** Encrypted 7Z requires `7zz` / `Archivist7z`.
+- **RAR create/extract** use the official RARLAB helpers (`ArchivistRar` / `ArchivistUnrar`) downloaded by `Scripts/build-helpers.sh`. Archivist does not reimplement RAR compression.
+- **libarchive cannot decrypt 7Z or RAR.** Encrypted 7Z requires `7zz` / `Archivist7z`. Encrypted RAR requires UnRAR.
 - **Single-file GZIP extract** uses `/usr/bin/gzip -dc` because libarchive's raw reader often reports a zero-size entry. Create still uses libarchive.
 - **Brotli create** is not implemented in libarchive write filters on this build.
 - **Apple Archive (.aar)** is not implemented.

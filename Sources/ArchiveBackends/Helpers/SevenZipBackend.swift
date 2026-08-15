@@ -7,6 +7,7 @@ public final class SevenZipBackend: ArchiveBackend, Sendable {
 
     public let supportedFormats: Set<ArchiveFormat> = [
         .sevenZip, .zip, .zipx, .tar, .wim, .msi, .cab, .iso, .gzip, .bzip2, .xz, .lzma, .zstd, .lz4,
+        .rar, .rar5,
     ]
 
     public init() {}
@@ -78,6 +79,9 @@ public final class SevenZipBackend: ArchiveBackend, Sendable {
         options: CompressionOptions,
         progress: @escaping ProgressHandler
     ) async throws {
+        if options.format == .rar || options.format == .rar5 {
+            throw ArchiveError.formatNotCreatable(options.format)
+        }
         let exe = try executable()
         let parent = destination.deletingLastPathComponent()
         let temp = AtomicFile.uniqueTemporaryURL(in: parent, name: destination.lastPathComponent)

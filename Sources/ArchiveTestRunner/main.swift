@@ -141,6 +141,11 @@ enum ArchiveTestRunner {
             } catch is ArchiveError {}
         }
 
+        check("cli rar format") {
+            let options = try CLIParser.parse(["archivemgr", "create", "a.txt", "out.rar", "--format", "rar"])
+            try expect(options.format == .rar5)
+        }
+
         await checkAsync("job completes") {
             let manager = JobManager()
             let id = await manager.submit(operation: .test, sourceName: "a.zip") { _, progress in
@@ -155,6 +160,7 @@ enum ArchiveTestRunner {
         await checkAsync("tar round trip") { try await roundTrip(.tar) }
         await checkAsync("tar.gz round trip") { try await roundTrip(.tarGz) }
         await checkAsync("7z round trip") { try await roundTrip(.sevenZip) }
+        await checkAsync("rar round trip") { try await roundTrip(.rar5) }
         await checkAsync("gzip round trip") { try await gzipRoundTrip() }
         await checkAsync("unicode filenames") { try await unicodeRoundTrip() }
         await checkAsync("inspect without extract") {

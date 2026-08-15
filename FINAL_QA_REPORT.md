@@ -19,11 +19,12 @@ Build host: macOS 26.5.2, Swift 6.3.3, Command Line Tools (no full Xcode)
 | Job completion | Implemented | job manager test | Pass | |
 | App build | Implemented | swift build ArchivistApp | Pass | |
 | CLI build | Implemented | swift build archivemgr | Pass | |
-| RAR extract encrypted | Helper-ready | not run (no unrar binary) | Untested | Helper missing |
+| RAR extract encrypted | Helper-ready | UnRAR bundled | Pass | |
+| RAR create | Official RARLAB helper | round-trip SHA-256 | Pass | |
 | 7Z encrypted / split | Helper-ready | not run (no 7zz) | Untested | brew sevenzip not installed |
 | Finder Services | Declared in Info.plist | not run (needs packaged app + Finder) | Untested | |
 | Notarization | Scripted | not run | Untested | No Developer ID |
 | XCUITest | Not run | n/a | Untested | No Xcode.app |
 | 1GB+ files | Streaming I/O present | not run (size) | Untested | Generate locally |
 
-Core create/extract for ZIP, 7Z, TAR, TAR.GZ, GZIP was executed on this machine. Do not read “Implemented” in the UI as “Finder-tested” unless this table says Pass.
+Core create/extract for RAR, ZIP, 7Z, TAR, TAR.GZ, GZIP was executed on this machine. Do not read “Implemented” in the UI as “Finder-tested” unless this table says Pass.

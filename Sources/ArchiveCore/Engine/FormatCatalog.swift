@@ -4,7 +4,8 @@ public enum FormatCatalog {
     public static func capabilities(
         _ format: ArchiveFormat,
         sevenZipAvailable: Bool,
-        unrarAvailable: Bool
+        unrarAvailable: Bool,
+        rarCreateAvailable: Bool = false
     ) -> FormatCapabilities {
         switch format {
         case .zip:
@@ -29,9 +30,16 @@ public enum FormatCatalog {
             )
         case .rar, .rar5:
             return FormatCapabilities(
-                list: true, extract: unrarAvailable || true, create: false, test: unrarAvailable || true,
-                password: unrarAvailable, split: unrarAvailable,
-                notes: "RAR creation is not implemented (RARLAB proprietary). Encrypted RAR requires UnRAR helper."
+                list: true,
+                extract: true,
+                create: rarCreateAvailable,
+                test: true,
+                password: unrarAvailable || rarCreateAvailable,
+                encryptFilenames: rarCreateAvailable,
+                split: rarCreateAvailable || unrarAvailable,
+                notes: rarCreateAvailable
+                    ? "RAR create/extract via the official RARLAB helpers bundled with Archivist."
+                    : "RAR extract works via UnRAR/libarchive. Creating RAR requires the official RARLAB `rar` helper."
             )
         case .tar, .pax:
             return FormatCapabilities(list: true, extract: true, create: true, test: true, modify: true)

@@ -8,10 +8,15 @@ public final class UnRARBackend: ArchiveBackend, Sendable {
 
     public init() {}
 
-    public var isAvailable: Bool { HelperLocator.find(names: ["ArchivistUnrar", "unrar"]) != nil }
+    public var isAvailable: Bool { unrarExecutable() != nil || rarExecutableURL() != nil }
 
     public func capabilities(for format: ArchiveFormat) -> FormatCapabilities {
-        FormatCatalog.capabilities(format, sevenZipAvailable: false, unrarAvailable: isAvailable)
+        FormatCatalog.capabilities(
+            format,
+            sevenZipAvailable: false,
+            unrarAvailable: unrarExecutable() != nil,
+            rarCreateAvailable: rarExecutableURL() != nil
+        )
     }
 
     public func inspect(_ source: URL, password: String?) async throws -> ArchiveInfo {
@@ -76,7 +81,32 @@ public final class UnRARBackend: ArchiveBackend, Sendable {
         options: CompressionOptions,
         progress: @escaping ProgressHandler
     ) async throws {
-        throw ArchiveError.formatNotCreatable(.rar)
+        let exe = try rarExecutable()
+        let parent = destination.deletingLastPathComponent()
+        try FileManager.default.createDirectory(at: parent, withIntermediateDirectories: true)
+        let temp = AtomicFile.uniqueTemporaryURL(in: parent, name: destination.lastPathComponent)
+        var args = ["a", "-idq", "-y", "-ep1", "-r"]
+        args.append(rarMethod(options.level))
+        if options.preserveSymlinks {
+            args.append("-ol")
+        }
+        if let password = options.password, !password.isEmpty {
+            if options.encryptFilenames || options.encryption == .rarAES {
+                args.append("-hp\(password)")
+            } else {
+                args.append("-p\(password)")
+            }
+        }
+        if let bytes = options.split.bytes, bytes > 0 {
+            args.append("-v\(max(1, bytes / 1_048_576))m")
+        }
+        args.append(temp.path)
+        args.append(contentsOf: sources.map(\.path))
+        progress(ProgressEngine().snapshot(completedBytes: 0, totalBytes: nil, isIndeterminate: true))
+        let result = try HelperRunner.run(executable: exe, arguments: args)
+        try mapExit(result)
+        try AtomicFile.replace(original: destination, withTemporary: temp)
+        progress(ProgressEngine().snapshot(completedBytes: 1, totalBytes: 1))
     }
 
     public func test(
@@ -164,17 +194,43 @@ public final class UnRARBackend: ArchiveBackend, Sendable {
     }
 
     private func executable() throws -> URL {
-        guard let url = HelperLocator.find(names: ["ArchivistUnrar", "unrar"]) else {
+        guard let url = unrarExecutable() else {
             throw ArchiveError.helperMissing("UnRAR (ArchivistUnrar / unrar)")
         }
         return url
     }
 
+    private func rarExecutable() throws -> URL {
+        guard let url = rarExecutableURL() else {
+            throw ArchiveError.helperMissing("RAR (ArchivistRar / rar). Run Scripts/build-helpers.sh")
+        }
+        return url
+    }
+
+    private func unrarExecutable() -> URL? {
+        HelperLocator.find(names: ["ArchivistUnrar", "unrar"])
+    }
+
+    private func rarExecutableURL() -> URL? {
+        HelperLocator.find(names: ["ArchivistRar", "rar"])
+    }
+
+    private func rarMethod(_ level: CompressionLevel) -> String {
+        switch level {
+        case .store: "-m0"
+        case .fastest: "-m1"
+        case .fast: "-m2"
+        case .normal: "-m3"
+        case .maximum: "-m4"
+        case .ultra: "-m5"
+        }
+    }
+
     private func mapExit(_ result: HelperResult) throws {
-        if result.exitCode == 0 { return }
+        if result.exitCode == 0 || result.exitCode == 1 { return }
         let blob = (result.stdout + "\n" + result.stderr)
         let lower = blob.lowercased()
-        if lower.contains("wrong password") || lower.contains("incorrect password") {
+        if result.exitCode == 11 || lower.contains("wrong password") || lower.contains("incorrect password") {
             throw ArchiveError.incorrectPassword
         }
         if lower.contains("cannot find volume") || lower.contains("missing volume") {

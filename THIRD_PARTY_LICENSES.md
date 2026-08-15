@@ -35,7 +35,11 @@ UnRAR source code may be used in any software to handle RAR archives without lim
 
 The UnRAR utility may be freely distributed, including inside other software packages.
 
-Archivist uses UnRAR **only for extraction, listing, and testing**. Archivist **does not create RAR archives**.
+Archivist uses UnRAR **for extraction, listing, and testing**. Creating RAR archives is done with RARLAB's official `rar` command-line helper (`ArchivistRar`), not with UnRAR sources.
+
+## RAR command-line helper (official RARLAB `rar`)
+
+The `rar` binary is RARLAB's trial/commercial command-line archiver. Archivist invokes it as a separate process to create RAR archives. It is downloaded by `Scripts/build-helpers.sh` into `Helpers/build/` (gitignored) and copied into `Archivist.app/Contents/Helpers/`. See the license file shipped next to the helper (`RARLAB-license.txt`).
 
 ## zlib
 

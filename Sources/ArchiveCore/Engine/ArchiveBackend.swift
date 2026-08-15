@@ -3,6 +3,7 @@ import Foundation
 public protocol ArchiveBackend: Sendable {
     var kind: BackendKind { get }
     var supportedFormats: Set<ArchiveFormat> { get }
+    var isAvailable: Bool { get }
 
     func capabilities(for format: ArchiveFormat) -> FormatCapabilities
 
@@ -35,6 +36,8 @@ public protocol ArchiveBackend: Sendable {
 }
 
 public extension ArchiveBackend {
+    var isAvailable: Bool { true }
+
     func inspect(_ source: URL) async throws -> ArchiveInfo {
         try await inspect(source, password: nil)
     }

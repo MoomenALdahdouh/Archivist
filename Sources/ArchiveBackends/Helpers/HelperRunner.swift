@@ -4,6 +4,7 @@ import ArchiveCore
 public enum HelperLocator {
     public static func find(names: [String], bundledFolder: String = "Helpers") -> URL? {
         var candidates: [URL] = []
+        let fm = FileManager.default
         let bundle = Bundle.main.bundleURL
         let helpers = bundle.appendingPathComponent("Contents", isDirectory: true).appendingPathComponent(bundledFolder, isDirectory: true)
         for name in names {
@@ -13,14 +14,28 @@ public enum HelperLocator {
         for name in names {
             candidates.append(exeDir.appendingPathComponent(name))
             candidates.append(exeDir.appendingPathComponent("Helpers").appendingPathComponent(name))
+            candidates.append(exeDir.deletingLastPathComponent().appendingPathComponent("Helpers").appendingPathComponent(name))
         }
-        let extras = ["/opt/homebrew/bin", "/usr/local/bin", "/usr/bin"]
-        for dir in extras {
+        if let env = ProcessInfo.processInfo.environment["ARCHIVIST_HELPERS"] {
             for name in names {
-                candidates.append(URL(fileURLWithPath: dir).appendingPathComponent(name))
+                candidates.append(URL(fileURLWithPath: env).appendingPathComponent(name))
             }
         }
-        return candidates.first { FileManager.default.isExecutableFile(atPath: $0.path) }
+        var dir = URL(fileURLWithPath: fm.currentDirectoryPath)
+        for _ in 0..<8 {
+            for name in names {
+                candidates.append(dir.appendingPathComponent("Helpers/build").appendingPathComponent(name))
+            }
+            dir.deleteLastPathComponent()
+        }
+        candidates.append(contentsOf: names.map { URL(fileURLWithPath: "/Applications/Archivist.app/Contents/Helpers").appendingPathComponent($0) })
+        let extras = ["/opt/homebrew/bin", "/usr/local/bin", "/usr/bin"]
+        for dirPath in extras {
+            for name in names {
+                candidates.append(URL(fileURLWithPath: dirPath).appendingPathComponent(name))
+            }
+        }
+        return candidates.first { fm.isExecutableFile(atPath: $0.path) }
     }
 }
 
@@ -40,6 +55,7 @@ public enum HelperRunner {
         let process = Process()
         process.executableURL = executable
         process.arguments = arguments
+        process.currentDirectoryURL = executable.deletingLastPathComponent()
         process.environment = ProcessInfo.processInfo.environment.merging(extraEnvironment) { _, new in new }
         let out = Pipe()
         let err = Pipe()

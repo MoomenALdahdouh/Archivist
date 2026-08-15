@@ -21,6 +21,10 @@ struct RoundTripTests {
         try await roundTrip(format: .sevenZip)
     }
 
+    @Test func rarRoundTrip() async throws {
+        try await roundTrip(format: .rar5)
+    }
+
     @Test func gzipSingleFileRoundTrip() async throws {
         let fm = FileManager.default
         let root = fm.temporaryDirectory.appendingPathComponent("archivist-gz-\(UUID().uuidString)", isDirectory: true)

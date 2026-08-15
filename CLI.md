@@ -6,6 +6,7 @@
 archivemgr list archive.zip
 archivemgr inspect archive.zip
 archivemgr extract archive.zip ./output
+archivemgr create ./folder archive.rar --format rar
 archivemgr create ./folder archive.7z --format 7z
 archivemgr test archive.rar
 archivemgr formats

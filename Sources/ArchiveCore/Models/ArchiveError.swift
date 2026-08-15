@@ -122,7 +122,7 @@ public enum ArchiveError: Error, Sendable, Equatable {
         case .notEnoughDiskSpace: "Free disk space or choose another destination."
         case .permissionDenied, .destinationNotWritable: "Choose a folder you can write to, or check permissions."
         case .unsafePath: "Do not extract this archive unless you trust the source."
-        case .helperMissing: "Build helpers with scripts/build-helpers.sh or install 7zz / unrar."
+        case .helperMissing: "Run Scripts/build-helpers.sh so ArchivistRar and ArchivistUnrar are bundled."
         case .decompressionBomb: "Confirm you have enough disk space and that you trust this archive."
         case .unsupportedFormat, .formatNotCreatable: "Choose a supported format. See SUPPORTED_FORMATS.md."
         default: "See technical details and diagnostics if the problem continues."

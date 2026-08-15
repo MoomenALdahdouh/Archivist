@@ -18,6 +18,7 @@ public struct AppSettings: Sendable, Codable, Equatable {
     public var appearance: AppearanceMode
     public var loggingEnabled: Bool
     public var finderExtractHere: Bool
+    public var finderCompressRAR: Bool
     public var finderCompressZIP: Bool
     public var finderCompress7Z: Bool
     public var verifyAfterCreate: Bool
@@ -32,7 +33,7 @@ public struct AppSettings: Sendable, Codable, Equatable {
         self.preservePermissions = true
         self.preserveSymlinks = true
         self.safety = .default
-        self.defaultFormat = .zip
+        self.defaultFormat = .rar5
         self.defaultCompressionLevel = .normal
         self.defaultSplit = .none
         self.rememberPasswords = false
@@ -40,6 +41,7 @@ public struct AppSettings: Sendable, Codable, Equatable {
         self.appearance = .system
         self.loggingEnabled = true
         self.finderExtractHere = true
+        self.finderCompressRAR = true
         self.finderCompressZIP = true
         self.finderCompress7Z = true
         self.verifyAfterCreate = false

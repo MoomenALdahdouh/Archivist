@@ -14,8 +14,7 @@ Optional helpers:
 
 ```bash
 brew install sevenzip   # 7zz — encrypted 7Z, WIM, MSI, split volumes
-# unrar — encrypted RAR (not in Homebrew core; copy a licensed binary into Helpers/build)
-./Scripts/build-helpers.sh
+./Scripts/build-helpers.sh   # downloads official RARLAB rar + unrar into Helpers/build
 ```
 
 ## Commands

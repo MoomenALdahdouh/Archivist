@@ -8,7 +8,7 @@ public struct BackendRegistry: Sendable {
     }
 
     public func backend(for format: ArchiveFormat, wantsCreate: Bool = false, encrypted: Bool = false) -> (any ArchiveBackend)? {
-        let ranked = backends.filter { $0.supportedFormats.contains(format) }
+        let ranked = backends.filter { $0.supportedFormats.contains(format) && $0.isAvailable }
         if encrypted {
             if let match = ranked.first(where: { $0.capabilities(for: format).password }) {
                 return match
@@ -103,9 +103,6 @@ public actor ArchiveEngine {
         options: CompressionOptions,
         progress: @escaping ProgressHandler = { _ in }
     ) async throws {
-        guard options.format != .rar && options.format != .rar5 else {
-            throw ArchiveError.formatNotCreatable(options.format)
-        }
         let backend = try resolve(format: options.format, wantsCreate: true, encrypted: options.password != nil)
         let caps = backend.capabilities(for: options.format)
         if !caps.create {

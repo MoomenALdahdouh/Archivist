@@ -141,7 +141,8 @@ def write_workflow(menu_name: str, bundle_id: str, command: str):
         fh.write(payload)
     print(f"Wrote {root}")
 
-write_workflow("Compress with Archivist", "app.archivist.service.compressZip", script("zip"))
+write_workflow("Compress with Archivist", "app.archivist.service.compressRar", script("rar"))
+write_workflow("Compress to ZIP with Archivist", "app.archivist.service.compressZip", script("zip"))
 write_workflow("Compress to 7Z with Archivist", "app.archivist.service.compress7z", script("7z"))
 PY
 
@@ -155,6 +156,7 @@ cp -R "$APP_SRC" "$APP_DST"
 mkdir -p "$SERVICES"
 # Replace previous Archivist Quick Actions.
 rm -rf "$SERVICES/Compress with Archivist.workflow" \
+       "$SERVICES/Compress to ZIP with Archivist.workflow" \
        "$SERVICES/Compress to 7Z with Archivist.workflow"
 cp -R "$APP_DST/Contents/Library/Services/"*.workflow "$SERVICES/" 2>/dev/null || true
 
@@ -169,12 +171,14 @@ python3 - <<'PY'
 import subprocess
 
 keys = [
-    "app.archivist.Archivist - Compress with Archivist - compressHereZIP",
+    "app.archivist.Archivist - Compress with Archivist - compressHereRAR",
+    "app.archivist.Archivist - Compress to ZIP (Archivist) - compressHereZIP",
     "app.archivist.Archivist - Compress to 7Z (Archivist) - compressHere7Z",
     "app.archivist.Archivist - Extract Here (Archivist) - extractHere",
     "app.archivist.Archivist - Extract to… (Archivist) - extractTo",
     "app.archivist.Archivist - Test Archive (Archivist) - testArchive",
-    "app.archivist.service.compressZip - Compress with Archivist - runWorkflowAsService",
+    "app.archivist.service.compressRar - Compress with Archivist - runWorkflowAsService",
+    "app.archivist.service.compressZip - Compress to ZIP with Archivist - runWorkflowAsService",
     "app.archivist.service.compress7z - Compress to 7Z with Archivist - runWorkflowAsService",
 ]
 value = "{ enabled_context_menu = 1; enabled_services_menu = 1; }"

@@ -134,6 +134,8 @@ public enum CLIParser {
         switch key {
         case "zip": return .zip
         case "7z", "7zip", "sevenzip": return .sevenZip
+        case "rar", "rar5": return .rar5
+        case "rar4": return .rar
         case "tar": return .tar
         case "targz", "tgz": return .tarGz
         case "tarbz2", "tbz2", "tbz": return .tarBz2
@@ -243,7 +245,7 @@ public enum ArchiveCLIRunner {
       archivemgr list ARCHIVE
       archivemgr inspect ARCHIVE
       archivemgr extract ARCHIVE DEST
-      archivemgr create SOURCE... ARCHIVE [--format zip|7z|tar|tar.gz|...]
+      archivemgr create SOURCE... ARCHIVE [--format zip|7z|rar|tar|tar.gz|...]
       archivemgr test ARCHIVE
       archivemgr formats
 
@@ -269,9 +271,9 @@ public enum ArchiveCLIRunner {
     """
 
     public static let formatsText = """
-    Create: ZIP, 7Z, TAR, TAR.GZ, TAR.BZ2, TAR.XZ, TAR.ZST, GZ, BZ2, XZ, LZMA, ZSTD, LZ4
-    Extract: those plus RAR/RAR5 (UnRAR helper), CAB, ISO, CPIO, AR, XAR, ZIP containers, WIM/MSI (7-Zip helper), DMG (hdiutil)
-    RAR creation is not supported.
+    Create: RAR, ZIP, 7Z, TAR, TAR.GZ, TAR.BZ2, TAR.XZ, TAR.ZST, GZ, BZ2, XZ, LZMA, ZSTD, LZ4
+    Extract: those plus RAR4/RAR5, CAB, ISO, CPIO, AR, XAR, ZIP containers, WIM/MSI (7-Zip helper), DMG (hdiutil)
+    RAR create/extract uses the official RARLAB helpers (ArchivistRar / ArchivistUnrar).
     """
 
     private static func printJSON<T: Encodable>(_ value: T) {

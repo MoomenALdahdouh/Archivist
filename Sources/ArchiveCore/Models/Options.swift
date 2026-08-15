@@ -143,6 +143,7 @@ public enum EncryptionMethod: String, Sendable, CaseIterable, Codable, Identifia
     case zipCrypto
     case zipAES
     case sevenZipAES256
+    case rarAES
 
     public var id: String { rawValue }
 
@@ -152,6 +153,7 @@ public enum EncryptionMethod: String, Sendable, CaseIterable, Codable, Identifia
         case .zipCrypto: "ZIP Crypto (legacy, weak)"
         case .zipAES: "ZIP AES"
         case .sevenZipAES256: "7Z AES-256"
+        case .rarAES: "RAR AES"
         }
     }
 }

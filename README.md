@@ -2,15 +2,15 @@
 
 A native macOS archive manager for listing, extracting, creating, and testing archives. Archivist is designed as a professional utility: streaming I/O, real progress, cancellation, Zip Slip protection, and honest format capabilities.
 
-It is **not** WinRAR, does not use WinRAR source or branding, and does not create RAR archives.
+It is **not** WinRAR and does not use WinRAR source or branding. RAR create and extract use the official RARLAB command-line helpers.
 
 ## Features
 
 - Browse archive contents without extracting
 - Extract all or selected entries with overwrite policies and metadata preservation
-- Create ZIP, 7Z, TAR and compressed TAR/single-file formats
-- Extract RAR/RAR5 when the UnRAR helper is available
-- Password-protected ZIP (libarchive) and 7Z (7-Zip helper)
+- Create RAR, ZIP, 7Z, TAR and compressed TAR/single-file formats
+- Extract and create RAR/RAR5 via bundled RARLAB helpers
+- Password-protected RAR, ZIP, and 7Z
 - Job queue with real byte progress, speed, and ETA
 - Finder Services, file associations, Dock drag-and-drop
 - `archivemgr` CLI sharing the same engine
@@ -36,7 +36,7 @@ See [BUILD.md](BUILD.md). Quick start:
 ```bash
 archivemgr list archive.zip
 archivemgr extract archive.zip ./output
-archivemgr create ./folder archive.7z
+archivemgr create ./folder archive.rar
 archivemgr test archive.rar
 ```
 

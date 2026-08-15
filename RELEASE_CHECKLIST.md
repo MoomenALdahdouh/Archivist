@@ -4,7 +4,7 @@
 - [x] `swift build --product ArchivistApp`
 - [x] `ArchiveTestRunner` 39 passed / 0 failed
 - [x] License audit files present
-- [x] SUPPORTED_FORMATS.md does not claim RAR create
+- [x] SUPPORTED_FORMATS.md documents RAR create via the official helper
 - [x] `./Scripts/package-app.sh` produces Archivist.app
 - [x] `./Scripts/release.sh` produces a DMG
 - [ ] Optional helpers copied into Contents/Helpers

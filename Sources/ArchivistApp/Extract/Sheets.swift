@@ -57,7 +57,7 @@ struct CompressSheet: View {
     @State private var showPassword = false
 
     private let creatable: [ArchiveFormat] = [
-        .zip, .sevenZip, .tar, .tarGz, .tarBz2, .tarXz, .tarZstd, .gzip, .bzip2, .xz, .zstd, .lz4,
+        .rar5, .zip, .sevenZip, .tar, .tarGz, .tarBz2, .tarXz, .tarZstd, .gzip, .bzip2, .xz, .zstd, .lz4,
     ]
 
     var body: some View {

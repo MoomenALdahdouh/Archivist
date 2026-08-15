@@ -10,23 +10,20 @@ public enum DefaultBackends {
         HelperLocator.find(names: ["ArchivistUnrar", "unrar"]) != nil
     }
 
+    public static func rarCreateAvailable() -> Bool {
+        HelperLocator.find(names: ["ArchivistRar", "rar"]) != nil
+    }
+
     public static func registry() -> BackendRegistry {
         BackendRegistry(backends: [
-            LibArchiveBackend(),
-            SevenZipBackend(),
             UnRARBackend(),
+            SevenZipBackend(),
+            LibArchiveBackend(),
             DiskImageBackend(),
         ])
     }
 
     public static func makeEngine() -> ArchiveEngine {
-        ArchiveEngine(
-            registry: BackendRegistry(backends: [
-                LibArchiveBackend(),
-                SevenZipBackend(),
-                UnRARBackend(),
-                DiskImageBackend(),
-            ])
-        )
+        ArchiveEngine(registry: registry())
     }
 }

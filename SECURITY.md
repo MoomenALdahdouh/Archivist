@@ -18,7 +18,7 @@ Passwords are never written to logs, history, or diagnostics. Keychain storage i
 
 ## Helpers
 
-7-Zip and UnRAR run as separate processes. RAR creation is not implemented.
+7-Zip and RARLAB `rar`/`unrar` run as separate processes.
 
 ## Sandbox
 

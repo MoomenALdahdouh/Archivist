@@ -82,6 +82,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         handleService(pboard, action: .extractTo)
     }
 
+    @objc func compressHereRAR(_ pboard: NSPasteboard, userData: String, error: NSErrorPointer) {
+        handleService(pboard, action: .compressHereRAR)
+    }
+
     @objc func compressZIP(_ pboard: NSPasteboard, userData: String, error: NSErrorPointer) {
         handleService(pboard, action: .compressZIP)
     }
@@ -103,7 +107,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private enum ServiceAction {
-        case extractHere, extractTo, compressZIP, compress7Z, compressHereZIP, compressHere7Z, test
+        case extractHere, extractTo, compressZIP, compress7Z, compressHereZIP, compressHere7Z, compressHereRAR, test
     }
 
     @MainActor
@@ -126,6 +130,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             model.compressHere(urls: urls, format: .zip)
         case .compressHere7Z:
             model.compressHere(urls: urls, format: .sevenZip)
+        case .compressHereRAR:
+            model.compressHere(urls: urls, format: .rar5)
         case .test:
             if let archive = urls.first {
                 model.test(archive: archive)

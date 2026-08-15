@@ -26,7 +26,7 @@ final class AppModel: ObservableObject {
     @Published var history: [HistoryRecord] = []
     @Published var extractDestination: URL?
     @Published var compressSources: [URL] = []
-    @Published var compressFormat: ArchiveFormat = .zip
+    @Published var compressFormat: ArchiveFormat = .rar5
     @Published var compressLevel: CompressionLevel = .normal
     @Published var compressPassword = ""
     @Published var compressConfirm = ""
@@ -213,7 +213,8 @@ final class AppModel: ObservableObject {
             format: compressFormat,
             level: compressLevel,
             password: password,
-            encryption: password == nil ? .none : (compressFormat == .sevenZip ? .sevenZipAES256 : .zipCrypto)
+            encryption: password == nil ? .none : encryption(for: compressFormat),
+            encryptFilenames: password != nil && (compressFormat == .rar5 || compressFormat == .rar)
         )
         let sources = compressSources
         showCompressSheet = false
@@ -240,6 +241,14 @@ final class AppModel: ObservableObject {
             _ = await engine.enqueueCreate(from: urls, destination: dest, options: options)
             refreshJobs()
             NSWorkspace.shared.activateFileViewerSelecting([dest])
+        }
+    }
+
+    private func encryption(for format: ArchiveFormat) -> EncryptionMethod {
+        switch format {
+        case .sevenZip: .sevenZipAES256
+        case .rar, .rar5: .rarAES
+        default: .zipCrypto
         }
     }
 

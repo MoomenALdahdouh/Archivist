@@ -7,7 +7,7 @@ Archivist is a native macOS archive manager. UI and CLI share one engine.
 1. **ArchivistApp** — SwiftUI + AppKit. No archive format logic.
 2. **ArchiveCLI / archivemgr** — command-line front end.
 3. **ArchiveCore** — models, format detection, security, jobs, progress, settings.
-4. **ArchiveBackends** — libarchive, 7-Zip helper, UnRAR helper, hdiutil.
+4. **ArchiveBackends** — libarchive, 7-Zip helper, UnRAR/RAR helpers, hdiutil.
 5. **CLibArchive** — clang module over Homebrew libarchive.
 
 ## Data flow
@@ -22,4 +22,4 @@ Every extract path is normalized. Absolute paths, `..`, null bytes, and symlink 
 
 ## Isolation
 
-7-Zip (LGPL) and UnRAR run as replaceable helper processes, not linked into the app. RAR creation is not implemented.
+7-Zip (LGPL) and RARLAB `rar`/`unrar` run as replaceable helper processes, not linked into the app.

@@ -51,7 +51,7 @@ public enum ArchiveFormat: String, Sendable, CaseIterable, Codable, Identifiable
         case .zipx: "ZIPX"
         case .sevenZip: "7Z"
         case .rar: "RAR4"
-        case .rar5: "RAR5"
+        case .rar5: "RAR"
         case .tar: "TAR"
         case .tarGz: "TAR.GZ"
         case .tarBz2: "TAR.BZ2"
