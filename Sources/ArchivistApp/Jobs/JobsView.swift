@@ -71,8 +71,8 @@ struct SettingsView: View {
 
             Form {
                 Picker("Default format", selection: $model.settings.defaultFormat) {
-                    Text("RAR").tag(ArchiveFormat.rar5)
                     Text("ZIP").tag(ArchiveFormat.zip)
+                    Text("RAR").tag(ArchiveFormat.rar5)
                     Text("7Z").tag(ArchiveFormat.sevenZip)
                     Text("TAR.GZ").tag(ArchiveFormat.tarGz)
                 }

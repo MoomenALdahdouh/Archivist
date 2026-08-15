@@ -26,7 +26,7 @@ final class AppModel: ObservableObject {
     @Published var history: [HistoryRecord] = []
     @Published var extractDestination: URL?
     @Published var compressSources: [URL] = []
-    @Published var compressFormat: ArchiveFormat = .rar5
+    @Published var compressFormat: ArchiveFormat = .zip
     @Published var compressLevel: CompressionLevel = .normal
     @Published var compressPassword = ""
     @Published var compressConfirm = ""
@@ -44,6 +44,7 @@ final class AppModel: ObservableObject {
             guard let self else { return }
             self.settings = await SettingsStore.shared.current()
             self.history = await HistoryStore.shared.all()
+            await MainActor.run { self.compressFormat = self.settings.defaultFormat }
             for await job in await self.jobManager.updates() {
                 await MainActor.run {
                     self.refreshJobs()
@@ -195,6 +196,32 @@ final class AppModel: ObservableObject {
         let folder = url.deletingPathExtension().lastPathComponent
         let dest = url.deletingLastPathComponent().appendingPathComponent(folder, isDirectory: true)
         extract(archive: url, to: dest)
+    }
+
+    /// Finder double-click / Extract with Archivist: unpack beside the archive and reveal the folder.
+    func extractFromFinder(_ archive: URL) {
+        let parent = archive.deletingLastPathComponent()
+        let stem = archive.deletingPathExtension().lastPathComponent
+        var dest = parent.appendingPathComponent(stem, isDirectory: true)
+        dest = UniqueName.next(for: dest)
+        var password: String?
+        if settings.useKeychain {
+            password = passwordStore.load(for: archive)
+        }
+        let options = ExtractionOptions(
+            extractAll: true,
+            preservePermissions: settings.preservePermissions,
+            preserveTimestamps: settings.preserveMetadata,
+            preserveSymlinks: settings.preserveSymlinks,
+            overwrite: .renameAutomatically,
+            password: password,
+            safety: settings.safety
+        )
+        Task {
+            _ = await engine.enqueueExtract(archive, to: dest, options: options)
+            refreshJobs()
+            NSWorkspace.shared.activateFileViewerSelecting([dest])
+        }
     }
 
     func compress(urls: [URL]? = nil, format: ArchiveFormat? = nil) {

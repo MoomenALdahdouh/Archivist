@@ -53,7 +53,32 @@ done
 open -R -- "$dest"
 '''
 
-def write_workflow(menu_name: str, bundle_id: str, command: str):
+def extract_script() -> str:
+    return f'''#!/bin/zsh
+CLI={cli!r}
+if [[ ! -x "$CLI" ]]; then
+  osascript -e 'display alert "Archivist is not installed" message "Put Archivist.app in /Applications, then try again."'
+  exit 1
+fi
+for archive in "$@"; do
+  parent="$(dirname -- "$archive")"
+  base="$(basename -- "$archive")"
+  name="${{base%.*}}"
+  dest="$parent/$name"
+  n=1
+  while [[ -e "$dest" ]]; do
+    dest="$parent/$name $n"
+    n=$((n+1))
+  done
+  mkdir -p -- "$dest"
+  "$CLI" extract "$archive" "$dest" --overwrite alwaysReplace
+  open -R -- "$dest"
+done
+'''
+
+def write_workflow(menu_name: str, bundle_id: str, command: str, file_types=None):
+    if file_types is None:
+        file_types = ["public.item", "public.content", "public.data"]
     root = os.path.join(services_dir, f"{menu_name}.workflow")
     contents = os.path.join(root, "Contents")
     resources = os.path.join(contents, "Resources")
@@ -69,7 +94,7 @@ def write_workflow(menu_name: str, bundle_id: str, command: str):
             "NSIconName": "NSActionTemplate",
             "NSBackgroundColorName": "gray",
             "NSRequiredContext": {"NSApplicationIdentifier": "com.apple.finder"},
-            "NSSendFileTypes": ["public.item", "public.content", "public.data"],
+            "NSSendFileTypes": file_types,
         }],
     }
     with open(os.path.join(contents, "Info.plist"), "wb") as fh:
@@ -141,8 +166,21 @@ def write_workflow(menu_name: str, bundle_id: str, command: str):
         fh.write(payload)
     print(f"Wrote {root}")
 
-write_workflow("Compress with Archivist", "app.archivist.service.compressRar", script("rar"))
-write_workflow("Compress to ZIP with Archivist", "app.archivist.service.compressZip", script("zip"))
+write_workflow(
+    "Extract with Archivist",
+    "app.archivist.service.extract",
+    extract_script(),
+    [
+        "app.archivist.rar-archive",
+        "com.rarlab.rar-archive",
+        "public.zip-archive",
+        "public.tar-archive",
+        "public.archive",
+        "org.7-zip.7-zip-archive",
+    ],
+)
+write_workflow("Compress with Archivist", "app.archivist.service.compressZip", script("zip"))
+write_workflow("Compress to RAR with Archivist", "app.archivist.service.compressRar", script("rar"))
 write_workflow("Compress to 7Z with Archivist", "app.archivist.service.compress7z", script("7z"))
 PY
 
@@ -157,7 +195,10 @@ mkdir -p "$SERVICES"
 # Replace previous Archivist Quick Actions.
 rm -rf "$SERVICES/Compress with Archivist.workflow" \
        "$SERVICES/Compress to ZIP with Archivist.workflow" \
-       "$SERVICES/Compress to 7Z with Archivist.workflow"
+       "$SERVICES/Compress to RAR with Archivist.workflow" \
+       "$SERVICES/Compress to 7Z with Archivist.workflow" \
+       "$SERVICES/Extract with Archivist.workflow" \
+       "$SERVICES/Extract Here (Archivist).workflow"
 cp -R "$APP_DST/Contents/Library/Services/"*.workflow "$SERVICES/" 2>/dev/null || true
 
 LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
@@ -171,14 +212,15 @@ python3 - <<'PY'
 import subprocess
 
 keys = [
-    "app.archivist.Archivist - Compress with Archivist - compressHereRAR",
-    "app.archivist.Archivist - Compress to ZIP (Archivist) - compressHereZIP",
+    "app.archivist.Archivist - Compress with Archivist - compressHereZIP",
+    "app.archivist.Archivist - Compress to RAR (Archivist) - compressHereRAR",
     "app.archivist.Archivist - Compress to 7Z (Archivist) - compressHere7Z",
-    "app.archivist.Archivist - Extract Here (Archivist) - extractHere",
+    "app.archivist.Archivist - Extract with Archivist - extractHere",
     "app.archivist.Archivist - Extract to… (Archivist) - extractTo",
     "app.archivist.Archivist - Test Archive (Archivist) - testArchive",
-    "app.archivist.service.compressRar - Compress with Archivist - runWorkflowAsService",
-    "app.archivist.service.compressZip - Compress to ZIP with Archivist - runWorkflowAsService",
+    "app.archivist.service.extract - Extract with Archivist - runWorkflowAsService",
+    "app.archivist.service.compressZip - Compress with Archivist - runWorkflowAsService",
+    "app.archivist.service.compressRar - Compress to RAR with Archivist - runWorkflowAsService",
     "app.archivist.service.compress7z - Compress to 7Z with Archivist - runWorkflowAsService",
 ]
 value = "{ enabled_context_menu = 1; enabled_services_menu = 1; }"
@@ -202,9 +244,9 @@ open -g -a "$APP_DST" || true
 echo
 echo "Installed Archivist to /Applications and Finder actions to ~/Library/Services."
 echo "Right-click files in Finder, then look for:"
+echo "  • Extract with Archivist"
 echo "  • Compress with Archivist"
-echo "  • Quick Actions → Compress with Archivist"
-echo "  • Services → Compress with Archivist"
+echo "  • Quick Actions → Extract with Archivist"
 echo
 echo "If it still does not appear: System Settings → Keyboard → Keyboard Shortcuts → Services,"
 echo "enable the Archivist items under Files and Folders, then right-click again."

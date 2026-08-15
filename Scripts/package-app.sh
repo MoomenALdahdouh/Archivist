@@ -10,6 +10,9 @@ swift build -c release --product archivemgr
 if [[ ! -x "$ROOT/Helpers/build/ArchivistRar" || ! -x "$ROOT/Helpers/build/ArchivistUnrar" ]]; then
   "$ROOT/Scripts/build-helpers.sh"
 fi
+if [[ ! -f "$ROOT/Resources/AppIcon.icns" || ! -f "$ROOT/Resources/RAR.icns" ]]; then
+  /usr/bin/swift "$ROOT/Scripts/generate-icons.swift" "$ROOT"
+fi
 
 BIN_APP="$(swift build -c release --show-bin-path)/ArchivistApp"
 BIN_CLI="$(swift build -c release --show-bin-path)/archivemgr"
@@ -20,6 +23,12 @@ mkdir -p "$DIST/Contents/MacOS" "$DIST/Contents/Helpers" "$DIST/Contents/Resourc
 cp "$BIN_APP" "$DIST/Contents/MacOS/Archivist"
 cp "$BIN_CLI" "$DIST/Contents/MacOS/archivemgr"
 cp "$ROOT/Resources/Info.plist" "$DIST/Contents/Info.plist"
+if [[ -f "$ROOT/Resources/AppIcon.icns" ]]; then
+  cp "$ROOT/Resources/AppIcon.icns" "$DIST/Contents/Resources/AppIcon.icns"
+fi
+if [[ -f "$ROOT/Resources/RAR.icns" ]]; then
+  cp "$ROOT/Resources/RAR.icns" "$DIST/Contents/Resources/RAR.icns"
+fi
 cp "$ROOT/Resources/Archivist.entitlements" "$DIST/Contents/Resources/"
 cp "$ROOT/LICENSE" "$DIST/Contents/Resources/LICENSE"
 cp "$ROOT/THIRD_PARTY_LICENSES.md" "$DIST/Contents/Resources/"

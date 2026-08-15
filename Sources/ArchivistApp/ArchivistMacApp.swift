@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import UniformTypeIdentifiers
 import ArchiveCore
 import ArchiveBackends
 
@@ -61,13 +62,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.servicesProvider = self
         NSUpdateDynamicServices()
         Task { try? await TempDirectoryManager.shared.prepareRoot() }
+        claimRARFileHandler()
         DispatchQueue.main.async {
             NSApp.activate(ignoringOtherApps: true)
         }
     }
 
     func application(_ application: NSApplication, open urls: [URL]) {
-        model.handleDroppedURLs(urls)
+        let intent = OpenIntent.classify(urls)
+        switch intent.kind {
+        case .extractArchive(let archive):
+            model.extractFromFinder(archive)
+        default:
+            model.handleDroppedURLs(urls)
+        }
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -116,9 +124,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard !urls.isEmpty else { return }
         switch action {
         case .extractHere:
-            if let archive = urls.first {
-                let dest = archive.deletingLastPathComponent()
-                model.extract(archive: archive, to: dest)
+            for url in urls {
+                model.extractFromFinder(url)
             }
         case .extractTo:
             model.handleDroppedURLs(urls)
@@ -152,5 +159,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return strings.map { URL(fileURLWithPath: $0) }
         }
         return []
+    }
+
+    private func claimRARFileHandler() {
+        let appURL = Bundle.main.bundleURL
+        var types: [UTType] = []
+        types.append(contentsOf: ["rar", "cbr"].compactMap { UTType(filenameExtension: $0) })
+        types.append(contentsOf: ["app.archivist.rar-archive", "com.rarlab.rar-archive"].compactMap { UTType($0) })
+        for type in types {
+            NSWorkspace.shared.setDefaultApplication(at: appURL, toOpen: type) { _ in }
+        }
     }
 }

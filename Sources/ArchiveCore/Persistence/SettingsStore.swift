@@ -33,7 +33,7 @@ public struct AppSettings: Sendable, Codable, Equatable {
         self.preservePermissions = true
         self.preserveSymlinks = true
         self.safety = .default
-        self.defaultFormat = .rar5
+        self.defaultFormat = .zip
         self.defaultCompressionLevel = .normal
         self.defaultSplit = .none
         self.rememberPasswords = false
