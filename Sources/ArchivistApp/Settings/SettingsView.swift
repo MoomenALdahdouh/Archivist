@@ -121,6 +121,9 @@ struct SettingsView: View {
                 if let url = URL(string: "https://github.com/MoomenALdahdouh/Archivist") {
                     Link("Source on GitHub", destination: url)
                 }
+                if let url = URL(string: "https://ko-fi.com/moomenaldahdouh") {
+                    Link("Buy me a coffee", destination: url)
+                }
             }
             .tabItem { Label("About", systemImage: "info.circle") }
         }

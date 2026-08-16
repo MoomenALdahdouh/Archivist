@@ -89,6 +89,16 @@ That installs Homebrew dependencies, downloads the official RARLAB helpers, buil
 
 Details: [BUILD.md](BUILD.md). Formats: [docs/SUPPORTED_FORMATS.md](docs/SUPPORTED_FORMATS.md). Problems: [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
+## Support
+
+If Archivist is useful, you can [buy me a coffee](https://ko-fi.com/moomenaldahdouh).
+
+<p>
+  <a href="https://ko-fi.com/moomenaldahdouh">
+    <img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Buy me a coffee">
+  </a>
+</p>
+
 ## License
 
 MIT for Archivist source. Third-party terms: [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).

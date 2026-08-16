@@ -33,6 +33,11 @@ struct ArchivistMacApp: App {
                 Button("Refresh") { Task { await appDelegate.model.reload() } }
                     .keyboardShortcut("r", modifiers: .command)
             }
+            CommandGroup(after: .help) {
+                if let url = URL(string: "https://ko-fi.com/moomenaldahdouh") {
+                    Link("Buy me a coffee…", destination: url)
+                }
+            }
         }
 
         Settings {
