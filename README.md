@@ -6,9 +6,15 @@
 
 <p align="center">
   <a href="https://github.com/MoomenALdahdouh/Archivist/actions/workflows/test.yml"><img src="https://github.com/MoomenALdahdouh/Archivist/actions/workflows/test.yml/badge.svg?branch=master" alt="Build"></a>
+  <a href="https://github.com/MoomenALdahdouh/Archivist/releases/latest"><img src="https://img.shields.io/github/v/release/MoomenALdahdouh/Archivist?label=release" alt="Release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/MoomenALdahdouh/Archivist?label=license" alt="License"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-blue" alt="macOS 14+">
   <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white" alt="Swift 6">
+</p>
+
+<p align="center">
+  <a href="https://github.com/MoomenALdahdouh/Archivist/releases/latest"><strong>Download Archivist 1.0.0</strong></a>
+  · Apple Silicon · macOS 14+
 </p>
 
 ---
@@ -35,7 +41,9 @@ Supported formats include ZIP, RAR, 7Z, TAR, and related containers. RAR create 
 
 ### Disk image (Apple Silicon)
 
-Download **Archivist-1.0.0.dmg** from [Releases](https://github.com/MoomenALdahdouh/Archivist/releases). Drag the app into **Applications**, then right-click **Archivist → Open**. The public build is ad-hoc signed, not notarized; macOS asks once.
+1. Download **Archivist-1.0.0.dmg** from [Releases](https://github.com/MoomenALdahdouh/Archivist/releases/latest).
+2. Drag **Archivist** into **Applications**.
+3. Right-click the app → **Open** (first launch only). The public build is ad-hoc signed, not notarized.
 
 Requires **macOS 14+** on Apple Silicon. Intel Macs should build from source.
 
