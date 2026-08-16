@@ -18,19 +18,26 @@ struct ContentView: View {
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        NavigationSplitView {
-            SidebarView()
-                .frame(minWidth: 180)
-        } content: {
+        Group {
             if model.session == nil {
-                EmptyStateView()
+                NavigationSplitView {
+                    SidebarView()
+                        .frame(minWidth: 180)
+                } detail: {
+                    EmptyStateView()
+                }
             } else {
-                ArchiveExplorerView()
-            }
-        } detail: {
-            if model.showInspector {
-                InspectorView()
-                    .frame(minWidth: 240)
+                NavigationSplitView {
+                    SidebarView()
+                        .frame(minWidth: 180)
+                } content: {
+                    ArchiveExplorerView()
+                } detail: {
+                    if model.showInspector {
+                        InspectorView()
+                            .frame(minWidth: 240)
+                    }
+                }
             }
         }
         .navigationTitle(model.session?.url.lastPathComponent ?? "Archivist")

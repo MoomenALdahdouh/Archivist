@@ -8,6 +8,28 @@ A native macOS archive manager. Browse, extract, compress, and test ZIP, RAR, 7Z
 
 RAR create and extract use official RARLAB command-line helpers, not a reimplemented compressor.
 
+## Screenshots
+
+Captured from the running app.
+
+<p align="center">
+  <img src="docs/screenshots/window.png" width="720" alt="Archivist main window">
+  <br>
+  <em>Main window — drop an archive to browse, or drop files to compress</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/rar-window.png" width="720" alt="Archivist browsing a RAR archive">
+  <br>
+  <em>Opening a RAR archive — folders, sizes, and format details</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/rar-finder.png" width="480" alt="RAR file in Finder with Archivist document icon">
+  <br>
+  <em>RAR files in Finder use Archivist’s document icon</em>
+</p>
+
 ## Download
 
 1. Get the latest **Archivist-1.0.0.dmg** from [Releases](https://github.com/MoomenALdahdouh/Archivist/releases).

@@ -65,6 +65,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         claimRARFileHandler()
         DispatchQueue.main.async {
             NSApp.activate(ignoringOtherApps: true)
+            self.openBrowseArgumentsIfNeeded()
         }
     }
 
@@ -159,6 +160,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return strings.map { URL(fileURLWithPath: $0) }
         }
         return []
+    }
+
+    private func openBrowseArgumentsIfNeeded() {
+        let args = CommandLine.arguments
+        guard let index = args.firstIndex(of: "--browse") else { return }
+        let paths = args.dropFirst(index + 1).filter { !$0.hasPrefix("-") }
+        let urls = paths.map { URL(fileURLWithPath: $0).standardizedFileURL }
+        guard !urls.isEmpty else { return }
+        model.handleDroppedURLs(urls)
     }
 
     private func claimRARFileHandler() {
