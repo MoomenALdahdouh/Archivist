@@ -13,10 +13,14 @@ mkdir -p "$SRC" "$BUILD"
 echo "Building helpers into $BUILD"
 
 if command -v 7zz >/dev/null 2>&1; then
+  rm -f "$BUILD/Archivist7z"
   cp "$(command -v 7zz)" "$BUILD/Archivist7z"
+  chmod +x "$BUILD/Archivist7z"
   echo "Copied system 7zz -> Archivist7z"
 elif [[ -x /opt/homebrew/bin/7zz ]]; then
+  rm -f "$BUILD/Archivist7z"
   cp /opt/homebrew/bin/7zz "$BUILD/Archivist7z"
+  chmod +x "$BUILD/Archivist7z"
 else
   echo "7zz not found. Install with: brew install sevenzip"
   echo "Encrypted 7Z / WIM / MSI will be unavailable until the helper exists."
@@ -36,22 +40,28 @@ rm -rf "$SRC/rar"
 tar -xzf "$SRC/rarmacos.tar.gz" -C "$SRC"
 
 if [[ -x "$SRC/rar/unrar" ]]; then
+  rm -f "$BUILD/ArchivistUnrar"
   cp "$SRC/rar/unrar" "$BUILD/ArchivistUnrar"
   chmod +x "$BUILD/ArchivistUnrar"
   echo "Installed ArchivistUnrar"
 elif command -v unrar >/dev/null 2>&1; then
+  rm -f "$BUILD/ArchivistUnrar"
   cp "$(command -v unrar)" "$BUILD/ArchivistUnrar"
+  chmod +x "$BUILD/ArchivistUnrar"
   echo "Copied system unrar -> ArchivistUnrar"
 else
   echo "unrar not found. RAR extraction will fall back to libarchive/7-Zip." >&2
 fi
 
 if [[ -x "$SRC/rar/rar" ]]; then
+  rm -f "$BUILD/ArchivistRar"
   cp "$SRC/rar/rar" "$BUILD/ArchivistRar"
   chmod +x "$BUILD/ArchivistRar"
   echo "Installed ArchivistRar"
 elif command -v rar >/dev/null 2>&1; then
+  rm -f "$BUILD/ArchivistRar"
   cp "$(command -v rar)" "$BUILD/ArchivistRar"
+  chmod +x "$BUILD/ArchivistRar"
   echo "Copied system rar -> ArchivistRar"
 else
   echo "rar not found. RAR creation will be unavailable." >&2

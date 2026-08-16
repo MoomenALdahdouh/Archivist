@@ -1,6 +1,6 @@
 # Architecture
 
-Archivist is a native macOS archive manager. UI and CLI share one engine.
+Archivist is a native macOS archive manager. The app and CLI share one engine.
 
 ## Layers
 
@@ -8,7 +8,7 @@ Archivist is a native macOS archive manager. UI and CLI share one engine.
 2. **ArchiveCLI / archivemgr** — command-line front end.
 3. **ArchiveCore** — models, format detection, security, jobs, progress, settings.
 4. **ArchiveBackends** — libarchive, 7-Zip helper, UnRAR/RAR helpers, hdiutil.
-5. **CLibArchive** — clang module over Homebrew libarchive.
+5. **CLibArchive** — clang module over libarchive. Release builds vendor the dylib into `Archivist.app/Contents/Frameworks/`.
 
 ## Data flow
 
@@ -22,4 +22,4 @@ Every extract path is normalized. Absolute paths, `..`, null bytes, and symlink 
 
 ## Isolation
 
-7-Zip (LGPL) and RARLAB `rar`/`unrar` run as replaceable helper processes, not linked into the app.
+7-Zip (LGPL) and RARLAB `rar`/`unrar` run as replaceable helper processes in `Contents/Helpers/`, not linked into the app.

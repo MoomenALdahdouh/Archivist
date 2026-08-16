@@ -1,5 +1,6 @@
 .build/
 .swiftpm/
+.cursor/
 *.xcodeproj/xcuserdata/
 *.xcworkspace/xcuserdata/
 DerivedData/
@@ -17,3 +18,5 @@ xcuserdata/
 *.key
 *.p12
 notarize-log.json
+Resources/*.iconset/
+Resources/AppIcon-1024.png

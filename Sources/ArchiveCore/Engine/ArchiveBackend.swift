@@ -54,6 +54,17 @@ public enum ArchiveOperationKind: String, Sendable, Codable {
     case create
     case test
     case modify
+
+    public var displayName: String {
+        switch self {
+        case .inspect: "Inspect"
+        case .list: "List"
+        case .extract: "Extract"
+        case .create: "Compress"
+        case .test: "Test"
+        case .modify: "Modify"
+        }
+    }
 }
 
 public struct ProgressSnapshot: Sendable, Hashable {

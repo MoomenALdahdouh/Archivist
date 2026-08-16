@@ -55,7 +55,16 @@ public enum HelperRunner {
         let process = Process()
         process.executableURL = executable
         process.arguments = arguments
-        process.currentDirectoryURL = executable.deletingLastPathComponent()
+        let helperDir = executable.deletingLastPathComponent()
+        let resources = helperDir.deletingLastPathComponent().appendingPathComponent("Resources", isDirectory: true)
+        let fm = FileManager.default
+        if fm.fileExists(atPath: helperDir.appendingPathComponent("rarfiles.lst").path) {
+            process.currentDirectoryURL = helperDir
+        } else if fm.fileExists(atPath: resources.appendingPathComponent("rarfiles.lst").path) {
+            process.currentDirectoryURL = resources
+        } else {
+            process.currentDirectoryURL = helperDir
+        }
         process.environment = ProcessInfo.processInfo.environment.merging(extraEnvironment) { _, new in new }
         let out = Pipe()
         let err = Pipe()

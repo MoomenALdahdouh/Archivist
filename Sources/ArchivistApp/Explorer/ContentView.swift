@@ -1,6 +1,17 @@
 import SwiftUI
 import UniformTypeIdentifiers
+import AppKit
 import ArchiveCore
+
+extension AppSettings.AppearanceMode {
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: nil
+        case .light: .light
+        case .dark: .dark
+        }
+    }
+}
 
 struct ContentView: View {
     @EnvironmentObject private var model: AppModel
@@ -41,6 +52,7 @@ struct ContentView: View {
             PreviewView(entry: entry)
         }
         .frame(minWidth: 900, minHeight: 560)
+        .preferredColorScheme(model.settings.appearance.colorScheme)
     }
 
     @ToolbarContentBuilder
@@ -98,9 +110,21 @@ struct SidebarView: View {
                 }
             }
             Section("Recent") {
-                ForEach(model.history.prefix(12)) { record in
-                    Text(record.archive)
-                        .lineLimit(1)
+                if model.history.isEmpty {
+                    Text("Nothing yet")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(model.history.prefix(12)) { record in
+                        Button {
+                            let url = URL(fileURLWithPath: record.archive)
+                            guard FileManager.default.fileExists(atPath: url.path) else { return }
+                            Task { await model.open(url) }
+                        } label: {
+                            Label(URL(fileURLWithPath: record.archive).lastPathComponent, systemImage: "clock")
+                        }
+                        .buttonStyle(.plain)
+                        .help(record.archive)
+                    }
                 }
             }
         }
@@ -113,20 +137,26 @@ struct EmptyStateView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            Image(systemName: "archivebox")
-                .font(.system(size: 56))
-                .foregroundStyle(.secondary)
+            Image(nsImage: NSApp.applicationIconImage)
+                .resizable()
+                .frame(width: 96, height: 96)
+                .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                .shadow(color: .black.opacity(0.18), radius: 12, y: 6)
             Text("Archivist")
                 .font(.largeTitle.bold())
-            Text("Drop files or folders here to compress\nor drop an archive here to extract")
+            Text("Drop an archive here to browse it, or drop files and folders to compress them.")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
-            HStack {
+                .frame(maxWidth: 420)
+            HStack(spacing: 12) {
                 Button("Open Archive") { model.presentOpenPanel() }
                     .keyboardShortcut("o", modifiers: .command)
                 Button("Compress…") { model.presentCompressPanel() }
             }
-            .padding(.top, 8)
+            .padding(.top, 4)
+            Text("ZIP, RAR, 7Z, TAR, and more")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding()

@@ -18,12 +18,18 @@ Passwords are never written to logs, history, or diagnostics. Keychain storage i
 
 ## Helpers
 
-7-Zip and RARLAB `rar`/`unrar` run as separate processes.
+7-Zip and RARLAB `rar`/`unrar` run as separate processes in `Contents/Helpers/`.
+
+## Libraries
+
+Release builds copy libarchive and its compression dylibs into `Contents/Frameworks/` and rewrite load paths to `@rpath`. The app does not need Homebrew at runtime.
+
+Ad-hoc signed builds set `com.apple.security.cs.disable-library-validation` so those bundled libraries can load. Developer ID notarized builds should re-sign every dylib and helper with the same identity.
 
 ## Sandbox
 
-Hardened Runtime is enabled. App Sandbox is off so Finder Services, Dock drops, and arbitrary extract destinations work. A future Mac App Store variant would need security-scoped bookmarks.
+App Sandbox is off so Finder Services, Dock drops, and arbitrary extract destinations work. A Mac App Store variant would need security-scoped bookmarks.
 
 ## No network
 
-Core archive operations are offline. There is no telemetry.
+Core archive operations are offline. There is no telemetry. Helper downloads happen only when you build from source (`Scripts/build-helpers.sh`).

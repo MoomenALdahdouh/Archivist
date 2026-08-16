@@ -1,0 +1,17 @@
+Install Archivist
+================
+
+1. Drag Archivist into the Applications folder.
+2. Open Applications, then right-click Archivist and choose Open.
+   macOS may warn that the app is not notarized. Choose Open.
+3. Leave Archivist running once so Finder can find its Extract and Compress actions.
+4. In Finder, right-click a file and look under Quick Actions or Services:
+     • Extract with Archivist
+     • Compress with Archivist          (ZIP)
+     • Compress to RAR with Archivist
+     • Compress to 7Z with Archivist
+
+This disk image is for Apple Silicon Macs (M1 and later) running macOS 14 or newer.
+
+If a Quick Action is missing, open System Settings → Keyboard → Keyboard
+Shortcuts → Services, then enable the Archivist items under Files and Folders.

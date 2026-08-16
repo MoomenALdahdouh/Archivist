@@ -124,7 +124,7 @@ public enum ArchiveError: Error, Sendable, Equatable {
         case .unsafePath: "Do not extract this archive unless you trust the source."
         case .helperMissing: "Run Scripts/build-helpers.sh so ArchivistRar and ArchivistUnrar are bundled."
         case .decompressionBomb: "Confirm you have enough disk space and that you trust this archive."
-        case .unsupportedFormat, .formatNotCreatable: "Choose a supported format. See SUPPORTED_FORMATS.md."
+        case .unsupportedFormat, .formatNotCreatable: "Choose a supported format. See docs/SUPPORTED_FORMATS.md."
         default: "See technical details and diagnostics if the problem continues."
         }
     }

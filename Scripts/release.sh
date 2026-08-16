@@ -3,19 +3,23 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-"$ROOT/Scripts/build-helpers.sh" || true
+# A DMG build must not overwrite the machine's /Applications copy.
+export ARCHIVIST_INSTALL_FINDER=0
+
+"$ROOT/Scripts/build-helpers.sh"
 "$ROOT/Scripts/package-app.sh"
 
 APP="$ROOT/dist/Archivist.app"
+VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$ROOT/Resources/Info.plist")"
 STAGE="$ROOT/dist/dmg"
 rm -rf "$STAGE"
 mkdir -p "$STAGE"
 cp -R "$APP" "$STAGE/"
 ln -s /Applications "$STAGE/Applications"
 cp "$ROOT/LICENSE" "$STAGE/LICENSE"
-cp "$ROOT/README.md" "$STAGE/README.md"
+cp "$ROOT/Resources/DMG-Read-Me.txt" "$STAGE/Read Me.txt"
 
-DMG="$ROOT/dist/Archivist-1.0.0.dmg"
+DMG="$ROOT/dist/Archivist-${VERSION}.dmg"
 rm -f "$DMG"
 hdiutil create -volname "Archivist" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
 echo "Created $DMG"
@@ -30,6 +34,7 @@ if [[ -n "$IDENTITY" ]]; then
   echo "Notarized and stapled"
 else
   echo "No ARCHIVIST_SIGN_IDENTITY set. Ad-hoc signed package only."
+  echo "The first time you open Archivist, right-click the app and choose Open."
   echo "To notarize: export ARCHIVIST_SIGN_IDENTITY='Developer ID Application: Name (TEAMID)'"
   echo "and configure notarytool keychain profile ARCHIVIST_NOTARY_PROFILE."
 fi

@@ -23,7 +23,7 @@ Most 7-Zip code is GNU LGPL 2.1 (or later). Some files use BSD-2-Clause or BSD-3
 
 Archivist ships 7-Zip as a **separate helper process** (`Archivist7z` / `7zz`) so the Archivist application is not a derivative work of 7-Zip under the LGPL. Users may replace the helper binary with a compatible LGPL build.
 
-Binary redistributions must reproduce 7-Zip license information. See `Helpers/7zip/` after `scripts/build-helpers.sh` runs.
+Binary redistributions must reproduce 7-Zip license information. See `Helpers/7zip/` after `Scripts/build-helpers.sh` runs.
 
 Full upstream text: https://7-zip.org/license.txt
 
@@ -41,6 +41,8 @@ Archivist uses UnRAR **for extraction, listing, and testing**. Creating RAR arch
 
 The `rar` binary is RARLAB's trial/commercial command-line archiver. Archivist invokes it as a separate process to create RAR archives. It is downloaded by `Scripts/build-helpers.sh` into `Helpers/build/` (gitignored) and copied into `Archivist.app/Contents/Helpers/`. See the license file shipped next to the helper (`RARLAB-license.txt`).
 
+Release builds also copy libarchive plus liblzma, libzstd, liblz4, and libb2 into `Archivist.app/Contents/Frameworks/` so the app runs without Homebrew.
+
 ## zlib
 
 Copyright (C) 1995-2024 Jean-loup Gailly and Mark Adler. zlib License.
@@ -56,6 +58,10 @@ BSD-3-Clause / GPLv2 dual license. Archivist uses the BSD-3-Clause terms when li
 ## lz4
 
 BSD-2-Clause.
+
+## libb2
+
+CC0 1.0 / public domain (BLAKE2 reference implementation).
 
 ## brotli
 

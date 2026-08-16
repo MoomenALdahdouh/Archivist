@@ -1,22 +1,22 @@
 # Dependency License Audit
 
-Audit date: 2026-08-15
+Audit date: 2026-08-16
 Product: Archivist (native macOS archive manager)
 
-This audit was performed **before** vendoring helper sources. Do not add a backend without updating this file.
+Do not add a backend without updating this file and `THIRD_PARTY_LICENSES.md`.
 
 ## Summary
 
 | Component | Use | License | Linking | Redistribution | Notes |
 | --- | --- | --- | --- | --- | --- |
 | Archivist source | App, CLI, engine | MIT | n/a | Yes | Original work |
-| libarchive | Primary archive I/O | BSD-2-Clause (plus some file-level notices) | Static or dynamic allowed | Yes, with copyright notice | Preferred backend |
+| libarchive | Primary archive I/O | BSD-2-Clause (plus some file-level notices) | Dynamic, vendored into `Contents/Frameworks/` | Yes, with copyright notice | Preferred backend |
+| liblzma / libzstd / liblz4 / libb2 | libarchive dependencies | public domain / BSD / CC0-like | Dynamic, vendored next to libarchive | Yes, with notices | Copied by `package-app.sh` |
 | 7-Zip | Encrypted 7Z, WIM, MSI, split volumes | LGPL-2.1 + mixed BSD + unRAR restriction on RAR decoder files | **Separate helper process only** | Yes, with LGPL notices and source/object offer for the helper | Do not statically link into the app |
 | UnRAR | RAR4/RAR5 extract/list/test | UnRAR freeware | **Separate helper process only** | Yes, with required paragraph | Extract-only |
 | RAR (RARLAB CLI) | RAR create | RARLAB trial/commercial | **Separate helper process only** | Do not reimplement compression; invoke official `rar` | Downloaded by `build-helpers.sh`, not compiled from UnRAR sources |
-| zlib / liblzma / zstd / lz4 / brotli | Filters via libarchive or system | zlib / public domain / BSD / MIT | Via libarchive or system | Yes | |
+| zlib / bzip2 / iconv / expat | Filters via libarchive | system / zlib | System `/usr/lib` | Do not copy Apple system libraries | |
 | hdiutil | DMG workflows | Apple system tool | Process invoke | Do not redistribute the tool | Adapter only |
-| Apple Compression / Apple Archive | Optional native compression | Apple SDK | Framework link | Do not redistribute SDK | |
 
 ## RAR
 
@@ -38,11 +38,11 @@ libarchive can detect encryption and can decrypt **ZIP** with a passphrase. It *
 
 ## Sandbox / Hardened Runtime
 
-Archivist is intended to ship with **Hardened Runtime** and **without App Sandbox**. An archive utility that extracts to arbitrary folders, accepts Dock drops, and shares a CLI cannot honestly operate fully sandboxed without constant user-hostile permission prompts. A future App Store variant would need security-scoped bookmarks and reduced Finder integration.
+Archivist ships **without App Sandbox**. An archive utility that extracts to arbitrary folders, accepts Dock drops, and shares a CLI cannot honestly operate fully sandboxed without constant permission prompts. Ad-hoc public builds disable library validation so vendored Homebrew-built dylibs can load. A future App Store variant would need security-scoped bookmarks and reduced Finder integration.
 
 ## Patents
 
-No MPEG, H.264, or other media codecs are bundled. Compression algorithms used (Deflate, LZMA, Zstandard, Brotli, bzip2) are treated as implementable via the licensed libraries above. RAR compression is provided only by invoking RARLAB's official `rar` binary.
+No MPEG, H.264, or other media codecs are bundled. Compression algorithms used (Deflate, LZMA, Zstandard, bzip2) are treated as implementable via the licensed libraries above. RAR compression is provided only by invoking RARLAB's official `rar` binary.
 
 ## Actions required when adding a dependency
 

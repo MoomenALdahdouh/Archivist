@@ -72,13 +72,23 @@ let package = Package(
             name: "archivemgr",
             dependencies: ["ArchiveCLI"],
             path: "Sources/archivemgr",
-            swiftSettings: libarchiveIncludeFlags
+            swiftSettings: libarchiveIncludeFlags,
+            linkerSettings: [
+                .unsafeFlags([
+                    "-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks",
+                ]),
+            ]
         ),
         .executableTarget(
             name: "ArchivistApp",
             dependencies: ["ArchiveCore", "ArchiveBackends"],
             path: "Sources/ArchivistApp",
-            swiftSettings: libarchiveIncludeFlags
+            swiftSettings: libarchiveIncludeFlags,
+            linkerSettings: [
+                .unsafeFlags([
+                    "-Xlinker", "-rpath", "-Xlinker", "@executable_path/../Frameworks",
+                ]),
+            ]
         ),
         .executableTarget(
             name: "ArchiveTestRunner",
